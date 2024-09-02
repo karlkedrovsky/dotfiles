@@ -5,6 +5,21 @@ function is_bin_in_path {
     builtin whence -p "$1" &> /dev/null
 }
 
+# Add directories to PATH as needed
+optional_bin_paths=(
+    "$HOME/bin"
+    "/usr/local/bin"
+    "$HOME/.local/bin"
+    "$HOME/.cargo/bin" #rust
+    "/opt/homebrew/opt/libpq/bin" # postgres on mac
+    "$HOME/.composer/vendor/bin"
+)
+for optional_bin_path in $optional_bin_paths; do
+    if [ -d "$optional_bin_path" ] && [[ ":$PATH:" != *":$optional_bin_path:"* ]]; then
+        PATH="$optional_bin_path${PATH:+":$PATH"}"
+    fi
+done
+
 ZINIT_HOME="${XDG_DATA_HOME:-${HOME}/.local/share}/zinit/zinit.git"
 
 # Install and init
@@ -115,21 +130,6 @@ if [[ $platform == 'Darwin' ]]; then
   alias showhiddenfiles='defaults write com.apple.finder AppleShowAllFiles TRUE'
   alias hidehiddenfiles='defaults write com.apple.finder AppleShowAllFiles FALSE'
 fi
-
-# Add directories to PATH as needed
-optional_bin_paths=(
-    "$HOME/bin"
-    "/usr/local/bin"
-    "$HOME/.local/bin"
-    "$HOME/.cargo/bin" #rust
-    "/opt/homebrew/opt/libpq/bin" # postgres on mac
-    "$HOME/.composer/vendor/bin"
-)
-for optional_bin_path in $optional_bin_paths; do
-    if [ -d "$optional_bin_path" ] && [[ ":$PATH:" != *":$optional_bin_path:"* ]]; then
-        PATH="$optional_bin_path${PATH:+":$PATH"}"
-    fi
-done
 
 # Homebrew
 if [[ -s "/opt/homebrew/bin/brew" ]]; then
