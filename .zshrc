@@ -5,21 +5,6 @@ function is_bin_in_path {
     builtin whence -p "$1" &> /dev/null
 }
 
-# Add directories to PATH as needed
-optional_bin_paths=(
-    "$HOME/bin"
-    "/usr/local/bin"
-    "$HOME/.local/bin"
-    "$HOME/.cargo/bin" #rust
-    "/opt/homebrew/opt/libpq/bin" # postgres on mac
-    "$HOME/.composer/vendor/bin"
-)
-for optional_bin_path in $optional_bin_paths; do
-    if [ -d "$optional_bin_path" ] && [[ ":$PATH:" != *":$optional_bin_path:"* ]]; then
-        PATH="$optional_bin_path${PATH:+":$PATH"}"
-    fi
-done
-
 ZINIT_HOME="${XDG_DATA_HOME:-${HOME}/.local/share}/zinit/zinit.git"
 
 # Install and init
@@ -49,9 +34,6 @@ autoload -Uz compinit && compinit
 
 zinit cdreplay -q
 
-# Prompt
-eval "$(oh-my-posh init zsh --config $HOME/.config/ohmyposh/config.toml)"
-
 # Keybindings
 bindkey -e
 bindkey '^p' history-search-backward
@@ -80,13 +62,43 @@ if is_bin_in_path fzf; then
     zstyle ':fzf-tab:complete:__zoxide_z:*' fzf-preview 'ls --color $realpath'
 fi
 
+unset GREP_OPTIONS
+unsetopt beep
+setopt auto_pushd
+
+platform=`uname`
+if [[ $platform == 'Darwin' ]]; then
+  alias showhiddenfiles='defaults write com.apple.finder AppleShowAllFiles TRUE'
+  alias hidehiddenfiles='defaults write com.apple.finder AppleShowAllFiles FALSE'
+fi
+
+# Add directories to PATH as needed
+optional_bin_paths=(
+    "$HOME/bin"
+    "/usr/local/bin"
+    "$HOME/.local/bin"
+    "$HOME/.cargo/bin" #rust
+    "/opt/homebrew/bin"
+    "/opt/homebrew/opt/libpq/bin" # postgres on mac
+    "$HOME/.composer/vendor/bin"
+)
+for optional_bin_path in $optional_bin_paths; do
+    if [ -d "$optional_bin_path" ] && [[ ":$PATH:" != *":$optional_bin_path:"* ]]; then
+        PATH="$optional_bin_path${PATH:+":$PATH"}"
+    fi
+done
+
 # Aliases
 alias ls='ls --color'
+alias ll='ls -al --color'
+alias c='clear'
+alias uvs='uv sync --freeze'
+alias uvr='uv run --no-sync'
+alias uvrm='uv run --no-sync manage.py'
 if is_bin_in_path nvim; then
     alias vi='nvim'
     alias vim='nvim'
 fi
-alias c='clear'
 if is_bin_in_path eza; then
     alias ls='eza'
     alias ll='eza -l'
@@ -121,18 +133,22 @@ if [[ $TERM != 'linux' && $TERM != 'dumb' ]]; then
   fi
 fi
 
-unset GREP_OPTIONS
-unsetopt beep
-setopt auto_pushd
-
-platform=`uname`
-if [[ $platform == 'Darwin' ]]; then
-  alias showhiddenfiles='defaults write com.apple.finder AppleShowAllFiles TRUE'
-  alias hidehiddenfiles='defaults write com.apple.finder AppleShowAllFiles FALSE'
-fi
+# Prompt
+eval "$(oh-my-posh init zsh --config $HOME/.config/ohmyposh/config.toml)"
 
 # Homebrew
 if [[ -s "/opt/homebrew/bin/brew" ]]; then
    eval "$(/opt/homebrew/bin/brew shellenv)"
 fi
+
+# Fastfetch
+if is_bin_in_path fastfetch; then
+    fastfetch
+fi
+
+# The following lines have been added by Docker Desktop to enable Docker CLI completions.
+fpath=(/Users/kkedrovsky/.docker/completions $fpath)
+autoload -Uz compinit
+compinit
+# End of Docker CLI completions
 
