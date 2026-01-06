@@ -12,7 +12,7 @@ stow
 ## Installation
 
 ```
-git clone https://github.com/karlkedrovsky/dotfiles.git
+git clone git@github.com:karlkedrovsky/dotfiles.git
 cd dotfiles
 stow .
 ```
