@@ -14,10 +14,12 @@ stow
 ```
 git clone git@github.com:karlkedrovsky/dotfiles.git
 cd dotfiles
-stow aliases
-stow bash
-stow neovmin
-stow tmux
-stow zsh
-stow kitty
+./stowall.sh
+```
+
+## Uninstalling
+
+```
+cd /path/to/dotfiles
+./unstowall.sh
 ```
