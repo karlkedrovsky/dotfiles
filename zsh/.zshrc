@@ -77,7 +77,8 @@ optional_bin_paths=(
     "$HOME/bin"
     "/usr/local/bin"
     "$HOME/.local/bin"
-    "$HOME/.cargo/bin" #rust
+    "$HOME/.cargo/bin" # rust managed by rustup
+    "$HOME/.local/share/bob/nvim-bin" # nvim managed by bob
     "/opt/homebrew/bin"
     "/opt/homebrew/opt/libpq/bin" # postgres on mac
     "$HOME/.composer/vendor/bin"
@@ -89,8 +90,14 @@ for optional_bin_path in $optional_bin_paths; do
 done
 
 # Aliases
-alias ls='ls --color'
-alias ll='ls -al --color'
+if is_bin_in_path exa; then
+	alias ls='exa'
+	alias ll='exa -al'
+	alias tree='exa -T'
+else
+    alias ls='ls --color'
+    alias ll='ls -al --color'
+fi
 alias c='clear'
 alias uvs='uv sync --freeze'
 alias uvr='uv run --no-sync'
@@ -99,13 +106,8 @@ if is_bin_in_path nvim; then
     alias vi='nvim'
     alias vim='nvim'
 fi
-if is_bin_in_path eza; then
-    alias ls='eza'
-    alias ll='eza -l'
-fi
 if is_bin_in_path bat; then
     alias cat='bat'
-    alias ll='eza -l'
 fi
 
 # Shell integrations
