@@ -118,6 +118,9 @@ if is_bin_in_path zoxide; then
     eval "$(zoxide init --cmd cd zsh)"
 fi
 
+# Tunnels
+alias wthtunnel="ssh -f -N -L 8006:proxmox.lab.kedrovsky.com:8006 -L 8007:opnsense.internal.kedrovsky.com:443 -J karl@www.kedrovsky.com karl@home.kedrovsky.com"
+
 export EDITOR=nvim
 export LANG=en_US.UTF-8
 export LC_CYTPE=$LANG
