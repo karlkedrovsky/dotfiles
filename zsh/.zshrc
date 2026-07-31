@@ -119,7 +119,7 @@ if is_bin_in_path zoxide; then
 fi
 
 # Tunnels
-alias wthtunnel="ssh -f -N -L 8006:proxmox.lab.kedrovsky.com:8006 -L 8007:opnsense.internal.kedrovsky.com:443 -J karl@www.kedrovsky.com karl@home.kedrovsky.com"
+alias wthtunnel="ssh -f -N -L 8006:proxmox.lab.kedrovsky.com:8006 -L 8007:opnsense.internal.kedrovsky.com:443 -L 8008:dashboard.k8s.kedrovsky.com:80 -L 8009:longhorn.k8s.kedrovsky.com:80 -J www.kedrovsky.com home.kedrovsky.com"
 
 export EDITOR=nvim
 export LANG=en_US.UTF-8
